@@ -19,19 +19,16 @@ public class Projectile
     public Projectile(Board b)
     {
         this.boardH = b;
-        //this.positionX = boardH.PlayerShip.getXposition();
-        //this.positionY = boardH.PlayerShip.getYposition();
     }
     public Projectile()
     {
         this.positionY = PlayerShip.getYposition()+ 6;
         this.positionX = PlayerShip.getXposition();
-        //this.boardH = b;
     }
 
     public Projectile(int positionX, int positionY)
     {
-        this.positionX = positionX; //boardH.PlayerShip.getXposition(); 
+        this.positionX = positionX; 
         this.positionY = positionY;
     }
 

@@ -13,11 +13,12 @@ public class SpaceInvaders2 extends JFrame
        
        window.setContentPane(board);
        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       window.setSize(600,800);
+       window.setSize(340,400);
        window.setVisible(true);
        window.setResizable(false);
        window.getContentPane().setBackground(Color.black);
        
+       board.CreateAliens();
        while(true)
        {
            board.move();

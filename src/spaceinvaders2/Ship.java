@@ -13,8 +13,8 @@ public class Ship
     private Board boardH;       //board hook
     private Projectile projectileH;
     
-    private int positionX = 300;        //Ship position     
-    private final int positionY = 700;
+    private int positionX = 140;        //Ship position     
+    private final int positionY = 350;
     private int Xacceleration = 0;      //Ship movment speed
     
     private final int WIDTH = 20;   //Width of a ship
@@ -35,32 +35,6 @@ public class Ship
     {
         g.drawImage(shipSkin, positionX, positionY, null);
     }
-    
-//    public void keyReleased(KeyEvent e)
-//    {
-//        if(!spaceReleased)
-//            spaceReleased = true;
-//
-//        if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT)
-//        {
-//            Xacceleration = 0;
-//        }
-//    }
-//    public void keyPressed(KeyEvent e)              //Poruszanie i strzelanie gracza.
-//    {
-//        if(e.getKeyCode() == KeyEvent.VK_LEFT)
-//                Xacceleration = -1;
-//    
-//        if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-//                Xacceleration = 1;
-//        
-//        if(e.getKeyCode() == KeyEvent.VK_SPACE)
-//            if(spaceReleased)
-//            {
-//                boardH.addNewShoot();
-//                spaceReleased = false;
-//            }
-//    }
     
     public void move()
     {
