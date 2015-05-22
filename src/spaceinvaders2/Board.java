@@ -1,4 +1,3 @@
-
 package spaceinvaders2;
 
 import java.awt.Graphics2D;
@@ -11,16 +10,27 @@ import javax.swing.JPanel;
 
 public class Board extends JPanel
 {
+    //To paint a ship, move it and generate projectile from it's position.
     Ship PlayerShip = new Ship(this);
-    private LinkedList<Projectile> ShootList = new LinkedList<Projectile>();    // Lista do przetrzymywania
-                                                                                // wszystkich strzałów
+    
+    //To paint a projectile, move it and set's it's position when shot.
     Projectile projectile = new Projectile(this);
     
+    //For handling all Alliens, moving them, painting we use list.
+    private LinkedList<Alien> Aliens = new LinkedList<Alien>();
+    
+    //a variable to manage holding "space" becaouse we don't want to shoot, when key "space" is hold
     private boolean spaceReleased = true;
+    
+    //In this constructor we use anonymous class to handle key events
+    //TODO: why in constructor?
+    //Because we want to make it only once, and ...?
     public Board()
     {
-        addKeyListener(new KeyListener()                //Obsługa klawiatury.
+        addKeyListener(new KeyListener()                //keyboard handling.
         {
+            
+            //TODO: Do I need this?
             @Override
             public void keyTyped(KeyEvent e) {}
 
@@ -40,12 +50,10 @@ public class Board extends JPanel
                         {
                             projectile.setPosY(PlayerShip.getYposition());
                             projectile.setPosX(PlayerShip.getXposition());
-                        //addNewShoot();
                             spaceReleased = false;
                         }
                     }
             }
-
             @Override
             public void keyReleased(KeyEvent e) 
             {
@@ -58,43 +66,50 @@ public class Board extends JPanel
                 }
             }
         });
+        // TODO: What is this?
 	setFocusable(true);
     }
-//    public void addNewShoot()                           //Dodanie nowego strzału do listy
-//    {
-//        Projectile projectile = new Projectile(this);
-//        ShootList.add(projectile);
-//    }
+    
+    //Function creates starting Aliens to linked list, they are painted later.
+    public void CreateAliens()
+    {
+        int AlienPosX;
+        int AlienPosY = 60;
+        
+        for(int i = 0; i < 5; ++i)
+        {
+            AlienPosX = 40;
+            for(int j = 0; j < 11; ++j)
+            {
+                AlienPosX += 20;
+                Alien BadAlien = new Alien(AlienPosX, AlienPosY);
+                Aliens.add(BadAlien);
+            }
+            AlienPosY += 20;
+        }
+    }
             
     @Override
     public void paint(Graphics g)
     {
+        //TODO: why like this.
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                             RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        //Projectile shootHook;
+        Alien AlienToDraw;
+        for(int i = 0; i < 55; ++i)
+        {
+            AlienToDraw = Aliens.get(i);
+            AlienToDraw.paint(g2d);
+        }
         PlayerShip.paint(g2d);
         projectile.paint(g2d);
-//        for(int i = 0; i < ShootList.size(); ++i)
-//        {
-//            shootHook = ShootList.get(i); // wyprintować wartość Y z każdego kolejnego strzału.
-//            
-//            shootHook.paint(g2d);
-//            g2d.drawString(String.valueOf(PlayerShip.getXposition()), 10+i*120, 30);
-//        }
     }
     
     public void move()
     {
         PlayerShip.move();
         projectile.move();
-//        for(int i = 0; i < ShootList.size(); ++i)
-//        {
-//            Projectile shootHook;
-//            shootHook = ShootList.get(i);
-//            shootHook.move();
-//        }
     }
 }
