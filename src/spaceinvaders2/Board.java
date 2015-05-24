@@ -19,7 +19,7 @@ public class Board extends JPanel
     //For handling all Alliens, moving them, painting we use list.
     private LinkedList<Alien> Aliens = new LinkedList<Alien>();
     
-    //a variable to manage holding "space" becaouse we don't want to shoot, when key "space" is hold
+    //a variable to manage holding "space" because we don't want to shoot, when key "space" is hold
     private boolean spaceReleased = true;
     
     private long time;
@@ -79,10 +79,10 @@ public class Board extends JPanel
         int AlienPosX;
         int AlienPosY = 60;
         
-        for(int i = 0; i < 5; ++i)
+        for(int i = 0; i < 4; ++i)
         {
             AlienPosX = 10;
-            for(int j = 0; j < 11; ++j)
+            for(int j = 0; j < 9; ++j)
             {
                 AlienPosX += 20;
                 Alien BadAlien = new Alien(AlienPosX, AlienPosY, this);
@@ -101,7 +101,7 @@ public class Board extends JPanel
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                             RenderingHints.VALUE_ANTIALIAS_ON);
         Alien AlienToDraw;
-        for(int i = 0; i < 55; ++i)
+        for(int i = 0; i < 36; ++i)
         {
             AlienToDraw = Aliens.get(i);
             AlienToDraw.paint(g2d);
@@ -110,43 +110,46 @@ public class Board extends JPanel
         projectile.paint(g2d);
     }
 
-     private boolean reachedREnd = false;
-     private boolean reachedLEnd = true;
-     
+    private int AlienAcceleration = 20;
+    private boolean reachedR = true;
+    
     public void move()
     {
         PlayerShip.move();
         projectile.move();
         long tEnd = System.currentTimeMillis();
-        
+        boolean reached = false;
+
         if((tEnd - time) >= 200)
         {
             this.time = System.currentTimeMillis();
             
-            int AlienAcceleration = 20;
 
             Alien AlienToMove = Aliens.getLast();
             
-            if(AlienToMove.getXposition() > this.getWidth())
+            if(AlienToMove.getXposition() + AlienToMove.getWidth() + Math.abs(AlienAcceleration) > this.getWidth() && reachedR)//reached right end
             {
-                reachedREnd = true;
-                reachedLEnd = false;
-                AlienToMove = Aliens.getFirst();
+                AlienAcceleration *= -1;
+                reached = true;
+                reachedR = false;
+            }
+
+            AlienToMove = Aliens.getFirst();
+            
+            if(AlienToMove.getXposition() - Math.abs(AlienAcceleration) <0 && !reachedR)//reached left end
+            {
+                AlienAcceleration *= -1;
+                reached = true;
+                reachedR = true;
             }
             
-            if(AlienToMove.getXposition() < 0)
-            {
-                reachedREnd = false;
-                reachedLEnd = true;
-                AlienToMove = Aliens.getLast();
-            }
-            if(reachedREnd && !reachedLEnd)
-                AlienAcceleration = -20;
-             
-            for (int i = 0; i < 55; ++i) 
+            for (int i = 0; i < 36; ++i) 
             {
                 AlienToMove = Aliens.get(i);
-                AlienToMove.setXPosition(AlienToMove.getXposition() + AlienAcceleration);
+                if(reached)
+                    AlienToMove.setYPosition(AlienToMove.getYposition() + 20);
+                else
+                    AlienToMove.setXPosition(AlienToMove.getXposition() + AlienAcceleration);
             }
         }
     }

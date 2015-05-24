@@ -2,6 +2,7 @@ package spaceinvaders2;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
 public class Projectile 
@@ -58,5 +59,9 @@ public class Projectile
     public boolean getProjectileCollision()
     {
         return this.collision;
+    }
+    public Rectangle getBounds()
+    {
+        return new Rectangle();
     }
 }
