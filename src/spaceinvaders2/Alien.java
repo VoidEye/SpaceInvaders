@@ -11,9 +11,11 @@ public class Alien
     private int positionY = 200;
     ImageIcon skin = new ImageIcon(this.getClass().getResource("alien.png"));
     private Image alienSkin = skin.getImage();
+    private Board boardH; 
     
-    public Alien(int PosX, int PosY)
+    public Alien(int PosX, int PosY, Board b)
     {
+        this.boardH = b;
         this.positionX = PosX;
         this.positionY = PosY;
     }
@@ -26,7 +28,7 @@ public class Alien
     public void move()
     {
         /* Potrzebuję zmiennej difference obliczanej przy każdej iteracji. Jeżeli difference == 0 to przesuń
-            czyli potrzebujemy zmiennej odliczajacej sekundy. */
+           czyli potrzebujemy zmiennej odliczajacej sekundy. */
     }
 
     public void destroyed()
@@ -41,5 +43,15 @@ public class Alien
     public int getYposition()
     {
         return positionY;
+    }
+    
+    public void setXPosition(int position)
+    {
+        this.positionX = position;
+    }
+    
+    public void setYPosition(int position)
+    {
+        this.positionY = position;
     }
 }

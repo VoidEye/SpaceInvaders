@@ -9,7 +9,8 @@ public class SpaceInvaders2 extends JFrame
     public static void main(String[] args) 
     {
        JFrame window = new JFrame("Space Invaders");
-       Board board = new Board();
+       long tStart = System.currentTimeMillis();
+       Board board = new Board(tStart);
        
        window.setContentPane(board);
        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

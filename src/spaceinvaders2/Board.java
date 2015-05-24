@@ -22,11 +22,14 @@ public class Board extends JPanel
     //a variable to manage holding "space" becaouse we don't want to shoot, when key "space" is hold
     private boolean spaceReleased = true;
     
+    private long time;
+    
     //In this constructor we use anonymous class to handle key events
     //TODO: why in constructor?
     //Because we want to make it only once, and ...?
-    public Board()
+    public Board(long time)
     {
+        this.time = time;
         addKeyListener(new KeyListener()                //keyboard handling.
         {
             
@@ -78,11 +81,11 @@ public class Board extends JPanel
         
         for(int i = 0; i < 5; ++i)
         {
-            AlienPosX = 40;
+            AlienPosX = 10;
             for(int j = 0; j < 11; ++j)
             {
                 AlienPosX += 20;
-                Alien BadAlien = new Alien(AlienPosX, AlienPosY);
+                Alien BadAlien = new Alien(AlienPosX, AlienPosY, this);
                 Aliens.add(BadAlien);
             }
             AlienPosY += 20;
@@ -106,10 +109,45 @@ public class Board extends JPanel
         PlayerShip.paint(g2d);
         projectile.paint(g2d);
     }
-    
+
+     private boolean reachedREnd = false;
+     private boolean reachedLEnd = true;
+     
     public void move()
     {
         PlayerShip.move();
         projectile.move();
+        long tEnd = System.currentTimeMillis();
+        
+        if((tEnd - time) >= 200)
+        {
+            this.time = System.currentTimeMillis();
+            
+            int AlienAcceleration = 20;
+
+            Alien AlienToMove = Aliens.getLast();
+            
+            if(AlienToMove.getXposition() > this.getWidth())
+            {
+                reachedREnd = true;
+                reachedLEnd = false;
+                AlienToMove = Aliens.getFirst();
+            }
+            
+            if(AlienToMove.getXposition() < 0)
+            {
+                reachedREnd = false;
+                reachedLEnd = true;
+                AlienToMove = Aliens.getLast();
+            }
+            if(reachedREnd && !reachedLEnd)
+                AlienAcceleration = -20;
+             
+            for (int i = 0; i < 55; ++i) 
+            {
+                AlienToMove = Aliens.get(i);
+                AlienToMove.setXPosition(AlienToMove.getXposition() + AlienAcceleration);
+            }
+        }
     }
 }
