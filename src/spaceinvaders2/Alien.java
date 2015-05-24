@@ -32,9 +32,14 @@ public class Alien
         /* Potrzebuję zmiennej difference obliczanej przy każdej iteracji. Jeżeli difference == 0 to przesuń
            czyli potrzebujemy zmiennej odliczajacej sekundy. */
         
-        
-        setXPosition(getXposition() + mAcceleration*(dir==AliensList.Direction.LEFT?-1:1));
-        
+        if(dir==AliensList.Direction.DOWN)
+        {
+            setYPosition(getYposition()+getWidth());
+        }
+        else
+        {
+            setXPosition(getXposition() + mAcceleration*(dir==AliensList.Direction.LEFT?-1:1));
+        }
     }
 
     public void destroyed()

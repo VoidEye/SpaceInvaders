@@ -14,10 +14,11 @@ import java.util.LinkedList;
  */
 public class AliensList
 {    
-    public enum Direction {RIGHT, LEFT};
+    public enum Direction {RIGHT, LEFT, DOWN};
     
     private LinkedList<Alien> mAliens = new LinkedList<Alien>();
     private Direction mAliensDirection=Direction.RIGHT;
+    private boolean mMoveDown=false;
     
     public void addAlien(Alien pAlien)
     {
@@ -26,7 +27,8 @@ public class AliensList
     
     public void changeDirection()
     {
-        mAliensDirection=mAliensDirection==Direction.LEFT?Direction.RIGHT:Direction.LEFT;        
+        mAliensDirection=mAliensDirection==Direction.LEFT?Direction.RIGHT:Direction.LEFT;
+        mMoveDown=true;
     }
     
     public void drawAllAliens(Graphics2D g2d)
@@ -46,7 +48,13 @@ public class AliensList
         {
             AlienToMove = mAliens.get(i);
             AlienToMove.move(mAliensDirection);
+            
+            if(mMoveDown)
+            {
+                AlienToMove.move(Direction.DOWN);
+            }
         }
+        mMoveDown=false;
     }
     
     public boolean checkVerticalCollision(int endValue, Direction dir)
