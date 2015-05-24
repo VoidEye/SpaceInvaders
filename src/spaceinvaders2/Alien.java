@@ -54,4 +54,14 @@ public class Alien
     {
         this.positionY = position;
     }
+    
+    public int getWidth()
+    {
+        return alienSkin.getWidth(null);
+    }
+    
+    public int getHeight(int position)
+    {
+        return alienSkin.getHeight(null);
+    }
 }

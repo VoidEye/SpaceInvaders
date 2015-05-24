@@ -109,11 +109,10 @@ public class Board extends JPanel
         PlayerShip.paint(g2d);
         projectile.paint(g2d);
     }
-
-     private boolean reachedREnd = false;
-     private boolean reachedLEnd = true;
      
-    public void move()
+    private int AlienAcceleration=20;
+     
+    public void move() throws InterruptedException
     {
         PlayerShip.move();
         projectile.move();
@@ -122,27 +121,21 @@ public class Board extends JPanel
         if((tEnd - time) >= 200)
         {
             this.time = System.currentTimeMillis();
-            
-            int AlienAcceleration = 20;
 
             Alien AlienToMove = Aliens.getLast();
             
-            if(AlienToMove.getXposition() > this.getWidth())
+            if(AlienToMove.getXposition()+AlienToMove.getWidth() + Math.abs(AlienAcceleration) > this.getWidth())//reached right end
             {
-                reachedREnd = true;
-                reachedLEnd = false;
-                AlienToMove = Aliens.getFirst();
+                AlienAcceleration*=-1;
             }
             
-            if(AlienToMove.getXposition() < 0)
+            AlienToMove = Aliens.getFirst();
+            
+            if(AlienToMove.getXposition() - Math.abs(AlienAcceleration) <0)//reached left end
             {
-                reachedREnd = false;
-                reachedLEnd = true;
-                AlienToMove = Aliens.getLast();
+                AlienAcceleration*=-1;
             }
-            if(reachedREnd && !reachedLEnd)
-                AlienAcceleration = -20;
-             
+            
             for (int i = 0; i < 55; ++i) 
             {
                 AlienToMove = Aliens.get(i);
