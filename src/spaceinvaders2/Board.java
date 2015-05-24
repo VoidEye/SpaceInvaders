@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.LinkedList;
 import javax.swing.JPanel;
 
 public class Board extends JPanel
@@ -17,7 +16,7 @@ public class Board extends JPanel
     Projectile projectile = new Projectile(this);
     
     //For handling all Alliens, moving them, painting we use list.
-    private LinkedList<Alien> Aliens = new LinkedList<Alien>();
+    private AliensList Aliens = new AliensList();
     
     //a variable to manage holding "space" becaouse we don't want to shoot, when key "space" is hold
     private boolean spaceReleased = true;
@@ -86,7 +85,7 @@ public class Board extends JPanel
             {
                 AlienPosX += 20;
                 Alien BadAlien = new Alien(AlienPosX, AlienPosY, this);
-                Aliens.add(BadAlien);
+                Aliens.addAlien(BadAlien);
             }
             AlienPosY += 20;
         }
@@ -100,18 +99,12 @@ public class Board extends JPanel
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                             RenderingHints.VALUE_ANTIALIAS_ON);
-        Alien AlienToDraw;
-        for(int i = 0; i < 55; ++i)
-        {
-            AlienToDraw = Aliens.get(i);
-            AlienToDraw.paint(g2d);
-        }
+        
+        Aliens.drawAllAliens(g2d);
         PlayerShip.paint(g2d);
         projectile.paint(g2d);
     }
-     
-    private int AlienAcceleration=20;
-     
+    
     public void move() throws InterruptedException
     {
         PlayerShip.move();
@@ -121,26 +114,14 @@ public class Board extends JPanel
         if((tEnd - time) >= 200)
         {
             this.time = System.currentTimeMillis();
-
-            Alien AlienToMove = Aliens.getLast();
             
-            if(AlienToMove.getXposition()+AlienToMove.getWidth() + Math.abs(AlienAcceleration) > this.getWidth())//reached right end
+            if(Aliens.checkVerticalCollision(this.getWidth(), AliensList.Direction.RIGHT) ||
+               Aliens.checkVerticalCollision(0, AliensList.Direction.LEFT))
             {
-                AlienAcceleration*=-1;
+                Aliens.changeDirection(); 
             }
             
-            AlienToMove = Aliens.getFirst();
-            
-            if(AlienToMove.getXposition() - Math.abs(AlienAcceleration) <0)//reached left end
-            {
-                AlienAcceleration*=-1;
-            }
-            
-            for (int i = 0; i < 55; ++i) 
-            {
-                AlienToMove = Aliens.get(i);
-                AlienToMove.setXPosition(AlienToMove.getXposition() + AlienAcceleration);
-            }
+            Aliens.moveAllAliens();
         }
     }
 }

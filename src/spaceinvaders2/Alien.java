@@ -7,11 +7,13 @@ import javax.swing.ImageIcon;
 
 public class Alien 
 {
+    
     private int positionX = 60;
     private int positionY = 200;
     ImageIcon skin = new ImageIcon(this.getClass().getResource("alien.png"));
     private Image alienSkin = skin.getImage();
-    private Board boardH; 
+    private Board boardH;
+    private int mAcceleration=20;
     
     public Alien(int PosX, int PosY, Board b)
     {
@@ -24,11 +26,15 @@ public class Alien
     {
         g.drawImage(alienSkin, positionX, positionY, null);
     }
-    
-    public void move()
+        
+    public void move(AliensList.Direction dir)
     {
         /* Potrzebuję zmiennej difference obliczanej przy każdej iteracji. Jeżeli difference == 0 to przesuń
            czyli potrzebujemy zmiennej odliczajacej sekundy. */
+        
+        
+        setXPosition(getXposition() + mAcceleration*(dir==AliensList.Direction.LEFT?-1:1));
+        
     }
 
     public void destroyed()
@@ -60,8 +66,13 @@ public class Alien
         return alienSkin.getWidth(null);
     }
     
-    public int getHeight(int position)
+    public int getHeight()
     {
         return alienSkin.getHeight(null);
+    }
+    
+    public int getAcceleration()
+    {
+        return mAcceleration;
     }
 }
