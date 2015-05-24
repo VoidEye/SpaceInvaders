@@ -18,7 +18,6 @@ public class Ship
     private int Xacceleration = 0;      //Ship movment speed
     
     private final int WIDTH = 20;   //Width of a ship
-    private final int HEIGHT = 20;   //Height of a ship
     
     private boolean spaceReleased = true;
     

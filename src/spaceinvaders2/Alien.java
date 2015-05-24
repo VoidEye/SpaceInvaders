@@ -2,6 +2,7 @@ package spaceinvaders2;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
 
@@ -25,15 +26,9 @@ public class Alien
         g.drawImage(alienSkin, positionX, positionY, null);
     }
     
-    public void move()
+    public void shot(int positionX, int positionY)
     {
-        /* Potrzebuję zmiennej difference obliczanej przy każdej iteracji. Jeżeli difference == 0 to przesuń
-           czyli potrzebujemy zmiennej odliczajacej sekundy. */
-    }
-
-    public void destroyed()
-    {
-        //TODO
+        //co pół skeundy + rand, tandomowy alien szczela.
     }
     
     public int getXposition()
@@ -60,8 +55,13 @@ public class Alien
         return alienSkin.getWidth(null);
     }
     
-    public int getHeight(int position)
+    public int getHeight()
     {
         return alienSkin.getHeight(null);
+    }
+    
+    public Rectangle getBounds()
+    {
+        return new Rectangle(positionX, positionY, this.getWidth(), this.getHeight());
     }
 }

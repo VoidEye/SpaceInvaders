@@ -23,6 +23,7 @@ public class Board extends JPanel
     private boolean spaceReleased = true;
     
     private long time;
+    private int AlienCount;
     
     //In this constructor we use anonymous class to handle key events
     //TODO: why in constructor?
@@ -41,10 +42,10 @@ public class Board extends JPanel
             public void keyPressed(KeyEvent e) 
             {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT)
-                    PlayerShip.setXacceleration(-1);
+                    PlayerShip.setXacceleration(-2);
                 
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                    PlayerShip.setXacceleration(1);
+                    PlayerShip.setXacceleration(2);
                 
                 if(e.getKeyCode() == KeyEvent.VK_SPACE)
                     if(spaceReleased)
@@ -53,6 +54,7 @@ public class Board extends JPanel
                         {
                             projectile.setPosY(PlayerShip.getYposition());
                             projectile.setPosX(PlayerShip.getXposition());
+                            projectile.setProjectileCollision(true);
                             spaceReleased = false;
                         }
                     }
@@ -90,6 +92,7 @@ public class Board extends JPanel
             }
             AlienPosY += 20;
         }
+        this.AlienCount = 4*9;
     }
             
     @Override
@@ -101,7 +104,7 @@ public class Board extends JPanel
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                             RenderingHints.VALUE_ANTIALIAS_ON);
         Alien AlienToDraw;
-        for(int i = 0; i < 36; ++i)
+        for(int i = 0; i < AlienCount; ++i)
         {
             AlienToDraw = Aliens.get(i);
             AlienToDraw.paint(g2d);
@@ -117,6 +120,7 @@ public class Board extends JPanel
     {
         PlayerShip.move();
         projectile.move();
+        this.collision();
         long tEnd = System.currentTimeMillis();
         boolean reached = false;
 
@@ -143,7 +147,7 @@ public class Board extends JPanel
                 reachedR = true;
             }
             
-            for (int i = 0; i < 36; ++i) 
+            for (int i = 0; i < AlienCount; ++i) 
             {
                 AlienToMove = Aliens.get(i);
                 if(reached)
@@ -152,5 +156,23 @@ public class Board extends JPanel
                     AlienToMove.setXPosition(AlienToMove.getXposition() + AlienAcceleration);
             }
         }
+    }
+    
+    public void collision()
+    {
+        Alien AlienToCheck;
+        for(int i = 0; i < AlienCount; ++i)
+        {
+            AlienToCheck = Aliens.get(i);
+            if(AlienToCheck.getBounds().intersects(projectile.getBounds()))
+            {
+               this.AlienCount--;
+               this.Aliens.remove(i);
+               projectile.setProjectileCollision(false);
+               projectile.remove();
+            }
+        }
+        if(projectile.getPosY() <= 0)
+            projectile.setProjectileCollision(false);
     }
 }

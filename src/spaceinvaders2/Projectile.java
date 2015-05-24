@@ -40,12 +40,23 @@ public class Projectile
     
     public void move()
     {
-        --positionY;
+        positionY -= 3;
+    }
+    
+    public void remove()
+    {
+        this.positionX = 800; 
+        this.positionY = 800;
     }
     
     public int getPosX()
     {
         return this.positionX;
+    }
+    
+    public int getPosY()
+    {
+        return this.positionY;
     }
     
     public void setPosY(int position)
@@ -56,12 +67,29 @@ public class Projectile
     {
         this.positionX = position;
     }
+    
+    public int getWidth()
+    {
+        return projectileSkin.getWidth(null);
+    }
+    
+    public int getHeight()
+    {
+        return projectileSkin.getHeight(null);
+    }
+    
+    public Rectangle getBounds()
+    {
+        return new Rectangle(positionX, positionY, this.getWidth(), this.getHeight());
+    }
+    
     public boolean getProjectileCollision()
     {
         return this.collision;
     }
-    public Rectangle getBounds()
+    
+    public void setProjectileCollision(boolean x)
     {
-        return new Rectangle();
+        this.collision = x;
     }
 }
