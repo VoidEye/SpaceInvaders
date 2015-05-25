@@ -22,7 +22,7 @@ public class SpaceInvaders2 extends JFrame
        board.CreateAliens();
        while(true)
        {
-           board.move();
+           board.Move();
            board.repaint();
            try
             {

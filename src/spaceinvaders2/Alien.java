@@ -12,11 +12,9 @@ public class Alien
     private int positionY = 200;
     ImageIcon skin = new ImageIcon(this.getClass().getResource("alien.png"));
     private Image alienSkin = skin.getImage();
-    private Board boardH; 
     
     public Alien(int PosX, int PosY)
     {
-        //this.boardH = b;
         this.positionX = PosX;
         this.positionY = PosY;
     }

@@ -14,14 +14,6 @@ public class Bomb
     ImageIcon skin = new ImageIcon(this.getClass().getResource("bomb.png"));
     private Image bombSkin = skin.getImage();
     
-    private Board boardH;       //board hook
-    //Alien ShotingAlien = new Alien(this);
-    
-    public Bomb(Board b)
-    {
-        this.boardH = b;
-    }
-    
     public Bomb(int PosX, int PosY)
     {
         this.positionX = PosX;

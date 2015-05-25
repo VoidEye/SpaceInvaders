@@ -12,13 +12,10 @@ public class Ship
     private Image shipSkin = skin.getImage();
     
     private Board boardH;       //board hook
-    private Projectile projectileH;
     
     private int positionX = 140;        //Ship position     
     private int positionY = 350;
-    private int Xacceleration = 0;      //Ship movment speed
-    
-    private final int WIDTH = 20;   //Width of a ship
+    private int xAcceleration = 0;      //Ship movment speed
     
     private boolean spaceReleased = true;
     
@@ -26,24 +23,20 @@ public class Ship
     {
         this.boardH = b;        //Need for comunication between classes
     }
-    public Ship(Projectile p)
-    {
-        this.projectileH = p;
-    }
     
     public void paint(Graphics2D g)
     {
         g.drawImage(shipSkin, positionX, positionY, null);
     }
     
-    public void move()
+    public void Move()
     {
-        if((positionX + Xacceleration > 0) && 
-        (positionX + Xacceleration < boardH.getWidth() - this.getWidth()))
-            positionX += Xacceleration;
+        if((positionX + xAcceleration > 0) && 
+        (positionX + xAcceleration < boardH.getWidth() - this.GetWidth()))
+            positionX += xAcceleration;
     }
 
-    public void destroyed()
+    public void Destroyed()
     {
         this.positionX = 140;
         this.positionY = 350;
@@ -52,38 +45,37 @@ public class Ship
             Thread.sleep((long) 500);
         }
         catch(InterruptedException ex){}
-        //add game over when reached position of ship.
     }
     
-    public int getXposition()
+    public int GetXposition()
     {
         return positionX;
     }
-    public int getYposition()
+    public int GetYposition()
     {
         return positionY;
     }
     
-    public void setXacceleration(int n)
+    public void SetXacceleration(int n)
     {
-         this.Xacceleration = n;
+         this.xAcceleration = n;
     }
-        public int getWidth()
+        public int GetWidth()
     {
         return shipSkin.getWidth(null);
     }
     
-    public int getHeight()
+    public int GetHeight()
     {
         return shipSkin.getHeight(null);
     }
     
-    public Rectangle getBounds()
+    public Rectangle GetBounds()
     {
-        return new Rectangle(positionX, positionY, this.getWidth(), this.getHeight());
+        return new Rectangle(positionX, positionY, this.GetWidth(), this.GetHeight());
     }
     
-    public Image getImage()
+    public Image GetImage()
     {
         return skin.getImage();
     }

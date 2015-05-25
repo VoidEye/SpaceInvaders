@@ -13,25 +13,8 @@ public class Projectile
     
     ImageIcon skin = new ImageIcon(this.getClass().getResource("shot.png"));
     private Image projectileSkin = skin.getImage();
-    
-    private Board boardH;       //board hook
-    Ship PlayerShip = new Ship(this);
-    
-    public Projectile(Board b)
-    {
-        this.boardH = b;
-    }
-    public Projectile()
-    {
-        this.positionY = PlayerShip.getYposition()+ 6;
-        this.positionX = PlayerShip.getXposition();
-    }
 
-    public Projectile(int positionX, int positionY)
-    {
-        this.positionX = positionX; 
-        this.positionY = positionY;
-    }
+    public Projectile(){}
 
     public void paint(Graphics2D g)
     {
