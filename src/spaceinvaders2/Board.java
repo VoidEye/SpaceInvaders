@@ -2,11 +2,15 @@ package spaceinvaders2;
 
 import java.awt.Graphics2D;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.LinkedList;
 import javax.swing.JPanel;
+import java.util.Random;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 public class Board extends JPanel
 {
@@ -19,11 +23,15 @@ public class Board extends JPanel
     //For handling all Alliens, moving them, painting we use list.
     private LinkedList<Alien> Aliens = new LinkedList<Alien>();
     
+    //Alien bombs
+    private LinkedList<Bomb> AlienBombs = new LinkedList<Bomb>();
+    
     //a variable to manage holding "space" because we don't want to shoot, when key "space" is hold
     private boolean spaceReleased = true;
     
     private long time;
     private int AlienCount;
+    private int PlayerLifes = 3;
     
     //In this constructor we use anonymous class to handle key events
     //TODO: why in constructor?
@@ -33,8 +41,6 @@ public class Board extends JPanel
         this.time = time;
         addKeyListener(new KeyListener()                //keyboard handling.
         {
-            
-            //TODO: Do I need this?
             @Override
             public void keyTyped(KeyEvent e) {}
 
@@ -87,12 +93,18 @@ public class Board extends JPanel
             for(int j = 0; j < 9; ++j)
             {
                 AlienPosX += 20;
-                Alien BadAlien = new Alien(AlienPosX, AlienPosY, this);
+                Alien BadAlien = new Alien(AlienPosX, AlienPosY);
                 Aliens.add(BadAlien);
             }
             AlienPosY += 20;
         }
         this.AlienCount = 4*9;
+    }
+    
+    public void ThrowBomb(int AlienPositionX, int AlienPositionY)
+    {
+        Bomb BombToAdd = new Bomb(AlienPositionX, AlienPositionY);
+        AlienBombs.add(BombToAdd);
     }
             
     @Override
@@ -109,8 +121,20 @@ public class Board extends JPanel
             AlienToDraw = Aliens.get(i);
             AlienToDraw.paint(g2d);
         }
+        Bomb BombToDraw;
+        for(int i = 0; i < AlienBombs.size(); ++i)
+        {
+            BombToDraw = AlienBombs.get(i);
+            BombToDraw.paint(g2d);
+        }
         PlayerShip.paint(g2d);
         projectile.paint(g2d);
+        
+        for(int i = 0; i < PlayerLifes; ++i)
+        {
+            Image Life = PlayerShip.getImage();
+            g.drawImage(Life, i*20, 20, null);
+        }
     }
 
     private int AlienAcceleration = 20;
@@ -118,13 +142,23 @@ public class Board extends JPanel
     
     public void move()
     {
+        //Moving palayerShip and it's projectile
+        this.PlayerCollision();
         PlayerShip.move();
         projectile.move();
-        this.collision();
+        
+        //Moving Bombs
+        for(int i = 0; i < AlienBombs.size(); ++i)
+        {
+            AlienBombs.get(i).move();
+        }
+        
+        //Moving Aliens
+        this.AlienCollision();
         long tEnd = System.currentTimeMillis();
         boolean reached = false;
 
-        if((tEnd - time) >= 200)
+        if((tEnd - time) >= 1000)
         {
             this.time = System.currentTimeMillis();
             
@@ -155,10 +189,18 @@ public class Board extends JPanel
                 else
                     AlienToMove.setXPosition(AlienToMove.getXposition() + AlienAcceleration);
             }
+            //Bomb Throwing mechanism
+            for(int i = 0; i < 2; ++i)
+            {
+                Random rand = new Random();
+                int randomNum = rand.nextInt((Aliens.size() - 2) + 1) + 1;
+                AlienToMove = Aliens.get(randomNum);
+                ThrowBomb(AlienToMove.getXposition(), AlienToMove.getYposition());
+            }
         }
     }
     
-    public void collision()
+    public void AlienCollision()
     {
         Alien AlienToCheck;
         for(int i = 0; i < AlienCount; ++i)
@@ -174,5 +216,26 @@ public class Board extends JPanel
         }
         if(projectile.getPosY() <= 0)
             projectile.setProjectileCollision(false);
+    }
+    public void PlayerCollision()
+    {
+        Bomb BombToCheck;
+        for(int i = 0; i < AlienBombs.size(); ++i)
+        {
+            BombToCheck = AlienBombs.get(i);
+            if(PlayerShip.getBounds().intersects(BombToCheck.getBounds()))
+            {
+                PlayerShip.destroyed();
+                this.AlienBombs.clear();
+                --PlayerLifes;
+                if(PlayerLifes == -1)
+                {
+                    JOptionPane.showMessageDialog(null, "Game Over");
+                    System.exit(-1);
+                }
+            }
+            if(BombToCheck.getPosY() > 400)
+                this.AlienBombs.remove(i);
+        }
     }
 }

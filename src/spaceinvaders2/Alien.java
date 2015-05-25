@@ -14,9 +14,9 @@ public class Alien
     private Image alienSkin = skin.getImage();
     private Board boardH; 
     
-    public Alien(int PosX, int PosY, Board b)
+    public Alien(int PosX, int PosY)
     {
-        this.boardH = b;
+        //this.boardH = b;
         this.positionX = PosX;
         this.positionY = PosY;
     }
@@ -24,11 +24,6 @@ public class Alien
     public void paint(Graphics2D g)
     {
         g.drawImage(alienSkin, positionX, positionY, null);
-    }
-    
-    public void shot(int positionX, int positionY)
-    {
-        //co pół skeundy + rand, tandomowy alien szczela.
     }
     
     public int getXposition()
