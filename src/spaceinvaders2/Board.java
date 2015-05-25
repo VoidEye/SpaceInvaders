@@ -158,7 +158,7 @@ public class Board extends JPanel
         long tEnd = System.currentTimeMillis();
         boolean reached = false;
 
-        if((tEnd - time) >= 1000)
+        if((tEnd - time) >= 200)
         {
             this.time = System.currentTimeMillis();
             
@@ -188,14 +188,22 @@ public class Board extends JPanel
                     AlienToMove.setYPosition(AlienToMove.getYposition() + 20);
                 else
                     AlienToMove.setXPosition(AlienToMove.getXposition() + AlienAcceleration);
+                if(AlienToMove.getYposition() >= PlayerShip.getYposition())
+                {
+                    JOptionPane.showMessageDialog(null, "Game Over");
+                    System.exit(-1);
+                }
             }
             //Bomb Throwing mechanism
             for(int i = 0; i < 2; ++i)
             {
                 Random rand = new Random();
-                int randomNum = rand.nextInt((Aliens.size() - 2) + 1) + 1;
-                AlienToMove = Aliens.get(randomNum);
-                ThrowBomb(AlienToMove.getXposition(), AlienToMove.getYposition());
+                if(Aliens.size() > 1)
+                {
+                    int randomNum = rand.nextInt((Aliens.size() - 2) + 1) + 1;
+                    AlienToMove = Aliens.get(randomNum);
+                    ThrowBomb(AlienToMove.getXposition(), AlienToMove.getYposition());
+                }
             }
         }
     }
@@ -212,6 +220,11 @@ public class Board extends JPanel
                this.Aliens.remove(i);
                projectile.setProjectileCollision(false);
                projectile.remove();
+               if(AlienCount <= 0)
+               {
+                   JOptionPane.showMessageDialog(null, "You won!");
+                   System.exit(-1);
+               }
             }
         }
         if(projectile.getPosY() <= 0)

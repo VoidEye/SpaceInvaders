@@ -80,7 +80,7 @@ public class Projectile
     
     public Rectangle getBounds()
     {
-        return new Rectangle(positionX, positionY, this.getWidth(), this.getHeight());
+        return new Rectangle(positionX, positionY, this.getWidth()+10, this.getHeight()+10);
     }
     
     public boolean getProjectileCollision()

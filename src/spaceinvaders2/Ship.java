@@ -52,7 +52,6 @@ public class Ship
             Thread.sleep((long) 500);
         }
         catch(InterruptedException ex){}
-        //add lifes,
         //add game over when reached position of ship.
     }
     
