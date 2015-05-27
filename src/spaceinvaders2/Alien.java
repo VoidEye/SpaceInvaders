@@ -4,14 +4,18 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import javax.swing.ImageIcon;
+import java.io.Serializable;
 
-
-public class Alien 
+/**
+ * @brief class responsible for placing a Alien in board space
+ * There are functions like get position, get bounds, get width and paint
+ */
+public class Alien implements Serializable
 {
     private int positionX = 60;
     private int positionY = 200;
-    ImageIcon skin = new ImageIcon(this.getClass().getResource("alien.png"));
-    private Image alienSkin = skin.getImage();
+    private transient final ImageIcon skin = new ImageIcon(this.getClass().getResource("alien.png"));
+    private transient final Image alienSkin = skin.getImage();
     
     public Alien(int PosX, int PosY)
     {

@@ -12,13 +12,23 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+/**
+ * 
+ * @brief most important class of program, where all functions responsible for painting, moving, sending and receiving data through network are stored.
+ * 
+ */
+
 public class Board extends JPanel
 {
     //To paint a ship, Move it and generate projectile from it's position.
     Ship playerShip = new Ship(this);
+    //Connected player ship
+    Ship player2Ship = new Ship(800, 800, this);
     
     //To paint a projectile, Move it and set's it's position when shot.
     Projectile projectile = new Projectile();
+    //Connected player projectile
+    Projectile projectile2 = new Projectile(800, 800);
     
     //For handling all Alliens, moving them, painting we use list.
     private LinkedList<Alien> Aliens = new LinkedList<Alien>();
@@ -29,16 +39,31 @@ public class Board extends JPanel
     //a variable to manage holding "space" because we don't want to shoot, when key "space" is hold
     private boolean spaceReleased = true;
     
-    private long timeStart;
-    private int alienCount;
+    //Player lifes
     private int playerLifes = 3;
-    private int alienAcceleration = 20;
+    
+    //Variable necessary for moving aliens in the right pace
+    private long timeStart;
+    //Variable determines a pace on which aliens move(1000 = 1s)
     private final int alienPositionChangePace = 1000;
+    //Number of aliens appering on the screen
+    private int alienCount;
+
+    //Variable determines how many pixels single alien moves every time it moves
+    private int alienAcceleration = 20;
+    
+    //Variable necessary for moving aliens downwards.
     private boolean reachedR = true;
     
-    //In this constructor we use anonymous class to handle key events
-    //TODO: why in constructor?
-    //Because we want to make it only once, and ...?
+    
+    /**
+     * @brief Default constructor.
+     * 
+     * Constructor takes argument 'time' which is result of function 'System.currentTimeMillis();'
+     * it's is necessary for proper Alien movement.
+     * In this constructor we make anonymous class that is required for keyboard handling.
+     * 
+     */
     public Board(long time)
     {
         this.timeStart = time;
@@ -83,7 +108,9 @@ public class Board extends JPanel
 	setFocusable(true);
     }
     
-    //Function creates starting Aliens to linked list, they are painted later.
+    /**@brief Function creates starting Aliens to linked list, they are painted later.
+     * 
+     */
     public void CreateAliens()
     {
         int alienPosX;
@@ -103,12 +130,18 @@ public class Board extends JPanel
         this.alienCount = 4*9;
     }
     
+    
+    /** @brief Function adds bomb at the specified location
+     */
     public void ThrowBomb(int alienPositionX, int alienPositionY)
     {
         Bomb bombToAdd = new Bomb(alienPositionX, alienPositionY);
         AlienBombs.add(bombToAdd);
     }
-            
+           
+    /** @brief Painting Aliens, SHips, Bombs and Projectiles
+     * 
+     */
     @Override
     public void paint(Graphics g)
     {
@@ -130,7 +163,9 @@ public class Board extends JPanel
             BombToDraw.paint(g2d);
         }
         playerShip.paint(g2d);
+        player2Ship.paint(g2d);
         projectile.paint(g2d);
+        projectile2.paint(g2d);
         
         for(int i = 0; i < playerLifes; ++i)
         {
@@ -139,12 +174,21 @@ public class Board extends JPanel
         }
     }
 
+    
+    /** @brief In this function player ship, projectile, bombs, and aliens are moved.
+      * also we check there Collisions (bomb with player, projectile with alien)
+      * We check there, if aliens got to the Players position, if yes, the game is over.*/
     public void Move()
     {
-        //Moving palayerShip and it's projectile
+        //Checking PleyerShip Collision, moving it and it's projectile
         this.PlayerCollision();
         playerShip.Move();
-        projectile.move();
+        projectile.Move();
+        if(projectile.getPosY() <= 0)
+        {
+            projectile.setProjectileCollision(false);
+            projectile.remove();
+        }
         
         //Moving Bombs
         for(int i = 0; i < AlienBombs.size(); ++i)
@@ -155,32 +199,40 @@ public class Board extends JPanel
         //Moving Aliens
         this.AlienCollision();
         
+        /*Aliens are moved at the pace of one second, at each iteration we assign new value
+         to tEnd, to check how much time has passed since we last moved aliens*/
         long tEnd = System.currentTimeMillis();
+        
+        //a variable necessary for moving Aliens downwards
         boolean reached = false;
-
+        
+        //There we check if enough time passed to move Aliens.
         if((tEnd - timeStart) >= alienPositionChangePace)
         {
+            //Here is assigned new value to variable timeStart, so we can be sure, that Aliens are moving at the same pace
             this.timeStart = System.currentTimeMillis();
             
-
+            //We take last Alien in list, and check if it has reached right border
             Alien alienToMove = Aliens.getLast();
-            
+            //If he did, we start moving to the left
             if(alienToMove.getXposition() + alienToMove.getWidth() + Math.abs(alienAcceleration) > this.getWidth() && reachedR)//reached right end
             {
                 alienAcceleration *= -1;
                 reached = true;
                 reachedR = false;
             }
-
+            //Here we take First alien from the list, to check if he reached left border
             alienToMove = Aliens.getFirst();
-            
+            //If he did, we start moving right
             if(alienToMove.getXposition() - Math.abs(alienAcceleration) <0 && !reachedR)//reached left end
             {
                 alienAcceleration *= -1;
                 reached = true;
                 reachedR = true;
             }
-            
+            /*There we move Aliens in vertical or horizontal motion.
+              Also, we check if any Alien reached Player position
+            */
             for (int i = 0; i < alienCount; ++i) 
             {
                 alienToMove = Aliens.get(i);
@@ -195,6 +247,7 @@ public class Board extends JPanel
                 }
             }
             //Bomb Throwing mechanism
+            /* A random alien is taken and a new bomb is created at his position*/
             for(int i = 0; i < 2; ++i)
             {
                 Random rand = new Random();
@@ -208,6 +261,10 @@ public class Board extends JPanel
         }
     }
     
+    /*
+     Function for checking if any alien was hit by a projectile, 
+     and if all aliens are dead player wins.
+    */
     public void AlienCollision()
     {
         Alien alienToCheck;
@@ -220,16 +277,20 @@ public class Board extends JPanel
                this.Aliens.remove(i);
                projectile.setProjectileCollision(false);
                projectile.remove();
-               if(alienCount <= 0)
-               {
-                   JOptionPane.showMessageDialog(null, "You won!");
-                   System.exit(-1);
-               }
             }
+            if(alienCount <= 0)
+            {
+                JOptionPane.showMessageDialog(null, "You won!");
+                System.exit(-1);
+            }  
         }
-        if(projectile.getPosY() <= 0)
-            projectile.setProjectileCollision(false);
     }
+    
+    /**
+     * @brief Function for checking if Player was hit by a bomb, 
+     * and if all PlayerLifes are used, player loose.
+     * Also, if a bomb misses player we remove it to maintain List of Bombs.
+    */
     public void PlayerCollision()
     {
         Bomb bombToCheck;
@@ -241,6 +302,8 @@ public class Board extends JPanel
                 playerShip.Destroyed();
                 this.AlienBombs.clear();
                 --playerLifes;
+                projectile.setProjectileCollision(false);
+                projectile.remove();
                 if(playerLifes == -1)
                 {
                     JOptionPane.showMessageDialog(null, "Game Over");
@@ -251,7 +314,71 @@ public class Board extends JPanel
                 this.AlienBombs.remove(i);
         }
     }
+    
+    /**
+     *  @brief Updates connected player ship and projectile positions
+    */
+    public void Player2Update(int shipPositionX, int shipPositionY, int projPositionX, int projPositionY, int lifesLeft)
+    {
+        this.player2Ship.SetXposition(shipPositionX);
+        this.player2Ship.SetYposition(shipPositionY);
+        
+        this.projectile2.setPosX(projPositionX);
+        this.projectile2.setPosY(projPositionY);
+    }
+    
+    /**
+      * @brief Required for sending information to connected player
+    */
+    public LinkedList GetAlienList()
+    {
+        return this.Aliens;
+    }
+    
+    /**
+     * @brief  Required for sending information to connected player
+    */
+    public LinkedList GetBombList()
+    {
+        return this.AlienBombs;
+    }
+    
+    /**
+      * @brief Updating Alien information for connected player
+    */
+    public void UpdateAliens(LinkedList<Alien> A)
+    {
+        Alien alienRecived;
+        
+        this.Aliens.clear();
+        
+        for(int i = 0; i < A.size(); ++i)
+        {
+            alienRecived = A.get(i);
+            Alien alienToMake = new Alien(alienRecived.getXposition(), alienRecived.getYposition());
+            Aliens.add(alienToMake);
+        }
+        this.alienCount = A.size();
+    }
+    
+    /**
+     *   @brief Updating Bombs information for connected player
+    */
+    public void UpdateBombs(LinkedList<Bomb> B)
+    {
+        this.AlienBombs = B;
+    }
+    
+    /**
+      * @brief A smaller version of function Move, 
+      * where we don't need to move aliens and bombs,
+      * because they are updated through network.
+    */
+    public void ClientMove()
+    {
+        this.PlayerCollision();
+        this.AlienCollision();
+        playerShip.Move();
+        projectile.Move();
+    }
 }
-
-
-/* TODO: some refactoring, netwrok communication, score, proper documentation comments*/

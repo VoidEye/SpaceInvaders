@@ -5,6 +5,10 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
+/**
+ * @brief class responsible for placing a player projectile in board space
+ * There are functions like get position, get bounds, get width, move and paint
+ */
 public class Projectile 
 {
     private int positionX = 0;
@@ -15,13 +19,18 @@ public class Projectile
     private Image projectileSkin = skin.getImage();
 
     public Projectile(){}
+    public Projectile(int posX, int posY)
+    {
+        this.positionX = posX;
+        this.positionY = posY;
+    }
 
     public void paint(Graphics2D g)
     {
         g.drawImage(projectileSkin, positionX+7, positionY, null);
     }
     
-    public void move()
+    public void Move()
     {
         positionY -= 3;
     }

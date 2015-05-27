@@ -5,6 +5,10 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
+/**
+ * @brief class responsible for placing an alien bomb in board space
+ * There are functions like get position, get bounds, get width, move and paint
+ */
 public class Bomb 
 {
     private int positionX = 0;
