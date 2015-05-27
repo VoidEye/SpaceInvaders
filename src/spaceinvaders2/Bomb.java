@@ -3,20 +3,20 @@ package spaceinvaders2;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import javax.swing.ImageIcon;
 
 /**
  * @brief class responsible for placing an alien bomb in board space
  * There are functions like get position, get bounds, get width, move and paint
  */
-public class Bomb 
+public class Bomb implements Serializable
 {
     private int positionX = 0;
     private int positionY = 0;
-    private boolean collision = false;
     
-    ImageIcon skin = new ImageIcon(this.getClass().getResource("bomb.png"));
-    private Image bombSkin = skin.getImage();
+    private transient final ImageIcon skin = new ImageIcon(this.getClass().getResource("bomb.png"));
+    private transient final Image bombSkin = skin.getImage();
     
     public Bomb(int PosX, int PosY)
     {
@@ -47,6 +47,11 @@ public class Bomb
     public Rectangle getBounds()
     {
         return new Rectangle(positionX, positionY, this.getWidth(), this.getHeight());
+    }
+    
+    public int getPosX()
+    {
+        return this.positionX;
     }
     
     public int getPosY()

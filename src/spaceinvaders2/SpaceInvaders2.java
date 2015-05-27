@@ -69,10 +69,16 @@ public class SpaceInvaders2 extends JFrame
                 objectOutput.writeObject(board.GetAlienList());
                 objectOutput.flush();
                 objectOutput.reset();
-
-                /*Data to send/recive(P1/P2): Ship position, Projectile position,
-                  Lifes left, Bombs position, Bombs count
-                  Aliens position, Aliens count */
+                
+                objectOutput.writeObject(board.GetBombList());
+                objectOutput.flush();
+                objectOutput.reset();
+                
+                objectOutput.writeObject(board.GetPlayerCoords());
+                objectOutput.flush();
+                objectOutput.reset();
+                
+                /*Data to send/recive(P1/P2): Ship position, Projectile position */
 
                 Thread.sleep((long) 10);
             }
@@ -88,6 +94,13 @@ public class SpaceInvaders2 extends JFrame
                 LinkedList<Alien> Aliens = (LinkedList<Alien>) object;
                 board.UpdateAliens(Aliens);
                 
+                object = objectInput.readObject();
+                LinkedList<Bomb> Bombs = (LinkedList<Bomb>) object;
+                board.UpdateBombs(Bombs);
+                
+                object = objectInput.readObject();
+                int[] P2Coords = (int[]) object;
+                board.Player2Update(P2Coords[0], P2Coords[1], P2Coords[2], P2Coords[3]);
                 board.ClientMove();
                 board.repaint();
 

@@ -177,7 +177,8 @@ public class Board extends JPanel
     
     /** @brief In this function player ship, projectile, bombs, and aliens are moved.
       * also we check there Collisions (bomb with player, projectile with alien)
-      * We check there, if aliens got to the Players position, if yes, the game is over.*/
+      * We check there, if aliens got to the Players position, if yes, the game is over.
+      */
     public void Move()
     {
         //Checking PleyerShip Collision, moving it and it's projectile
@@ -261,9 +262,9 @@ public class Board extends JPanel
         }
     }
     
-    /*
-     Function for checking if any alien was hit by a projectile, 
-     and if all aliens are dead player wins.
+    /**
+     * @brief Function for checking if any alien was hit by a projectile, 
+     *       and if all aliens are dead player wins.
     */
     public void AlienCollision()
     {
@@ -290,7 +291,7 @@ public class Board extends JPanel
      * @brief Function for checking if Player was hit by a bomb, 
      * and if all PlayerLifes are used, player loose.
      * Also, if a bomb misses player we remove it to maintain List of Bombs.
-    */
+     */
     public void PlayerCollision()
     {
         Bomb bombToCheck;
@@ -317,8 +318,8 @@ public class Board extends JPanel
     
     /**
      *  @brief Updates connected player ship and projectile positions
-    */
-    public void Player2Update(int shipPositionX, int shipPositionY, int projPositionX, int projPositionY, int lifesLeft)
+     */
+    public void Player2Update(int shipPositionX, int shipPositionY, int projPositionX, int projPositionY)
     {
         this.player2Ship.SetXposition(shipPositionX);
         this.player2Ship.SetYposition(shipPositionY);
@@ -329,7 +330,7 @@ public class Board extends JPanel
     
     /**
       * @brief Required for sending information to connected player
-    */
+      */
     public LinkedList GetAlienList()
     {
         return this.Aliens;
@@ -345,17 +346,17 @@ public class Board extends JPanel
     
     /**
       * @brief Updating Alien information for connected player
-    */
+      */
     public void UpdateAliens(LinkedList<Alien> A)
     {
-        Alien alienRecived;
+        Alien alienReceived;
         
         this.Aliens.clear();
         
         for(int i = 0; i < A.size(); ++i)
         {
-            alienRecived = A.get(i);
-            Alien alienToMake = new Alien(alienRecived.getXposition(), alienRecived.getYposition());
+            alienReceived = A.get(i);
+            Alien alienToMake = new Alien(alienReceived.getXposition(), alienReceived.getYposition());
             Aliens.add(alienToMake);
         }
         this.alienCount = A.size();
@@ -366,7 +367,30 @@ public class Board extends JPanel
     */
     public void UpdateBombs(LinkedList<Bomb> B)
     {
-        this.AlienBombs = B;
+        Bomb bombReceived;
+        
+        this.AlienBombs.clear();
+        
+        for(int i = 0; i < B.size(); ++i)
+        {
+            bombReceived = B.get(i);
+            Bomb bombToMake = new Bomb(bombReceived.getPosX(), bombReceived.getPosY());
+            AlienBombs.add(bombToMake);
+        }
+    }
+    
+    /**
+     *   @brief Required for sending information about Projectile and ship position to connected player
+    */
+    public int[] GetPlayerCoords()
+    {
+        int[] Coords = new int[4];
+        Coords[0] = this.playerShip.GetXposition();
+        Coords[1] = this.playerShip.GetYposition();
+        Coords[2] = this.projectile.getPosX();
+        Coords[3] = this.projectile.getPosY();
+        
+        return Coords;
     }
     
     /**

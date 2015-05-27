@@ -15,8 +15,8 @@ public class Projectile
     private int positionY = 0;
     private boolean collision = false;
     
-    ImageIcon skin = new ImageIcon(this.getClass().getResource("shot.png"));
-    private Image projectileSkin = skin.getImage();
+    private transient final ImageIcon skin = new ImageIcon(this.getClass().getResource("shot.png"));
+    private transient final Image projectileSkin = skin.getImage();
 
     public Projectile(){}
     public Projectile(int posX, int posY)
