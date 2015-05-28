@@ -6,7 +6,6 @@ import javax.swing.JOptionPane;
  */
 public class ServerCheck extends javax.swing.JFrame 
 {
-   // public boolean isThisServer = false;
     public ServerCheck() {
         initComponents();
     }

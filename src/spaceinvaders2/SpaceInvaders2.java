@@ -62,6 +62,7 @@ public class SpaceInvaders2 extends JFrame
             ServerSocket server = new ServerSocket(1500);
             serverSocket = server.accept();
             ObjectOutputStream objectOutput = new ObjectOutputStream(serverSocket.getOutputStream());
+            ObjectInputStream objectInput = new ObjectInputStream(serverSocket.getInputStream());
             while(true) 
             { 
                 board.Move();
@@ -78,6 +79,19 @@ public class SpaceInvaders2 extends JFrame
                 objectOutput.flush();
                 objectOutput.reset();
                 
+                Object object = objectInput.readObject();
+                
+                LinkedList<Alien> Aliens = (LinkedList<Alien>) object;
+                board.UpdateAliens(Aliens);
+                
+                object = objectInput.readObject();
+                LinkedList<Bomb> Bombs = (LinkedList<Bomb>) object;
+                board.UpdateBombs(Bombs);
+                
+                object = objectInput.readObject();
+                int[] P2Coords = (int[]) object;
+                board.Player2Update(P2Coords[0], P2Coords[1], P2Coords[2], P2Coords[3]);
+                
                 /*Data to send/recive(P1/P2): Ship position, Projectile position */
 
                 Thread.sleep((long) 10);
@@ -87,6 +101,7 @@ public class SpaceInvaders2 extends JFrame
         {
             Socket socket = new Socket("127.0.0.1",1500);
             ObjectInputStream objectInput = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
             while (true) 
             {
                 Object object = objectInput.readObject();
@@ -101,7 +116,22 @@ public class SpaceInvaders2 extends JFrame
                 object = objectInput.readObject();
                 int[] P2Coords = (int[]) object;
                 board.Player2Update(P2Coords[0], P2Coords[1], P2Coords[2], P2Coords[3]);
+                
                 board.ClientMove();
+                
+                objectOutput.writeObject(board.GetAlienList());
+                objectOutput.flush();
+                objectOutput.reset();
+                
+                objectOutput.writeObject(board.GetBombList());
+                objectOutput.flush();
+                objectOutput.reset();
+                
+                objectOutput.writeObject(board.GetPlayerCoords());
+                objectOutput.flush();
+                objectOutput.reset();
+                
+                
                 board.repaint();
 
                 Thread.sleep((long) 10);
